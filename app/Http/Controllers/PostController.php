@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\PostRequest;
+use App\Models\Comment;
+use App\Models\Notification;
+use App\Models\NotificationType;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,8 +36,6 @@ class PostController extends Controller
         return to_route('posts.show', $post);
     }
     public function show(Post $post) {
-        Auth::logout();
-        Auth::loginUsingId(2);
         return view('posts.show', compact('post'));
     }
     public function edit(Post $post) {
@@ -63,6 +64,28 @@ class PostController extends Controller
             'content' => $request->content,
         ]);
 
+        if ($post->user_id !== Auth::id()) {
+            $notification = new Notification();
+            $notification->notification_type_id = 1;
+            $notification->user_id = $post->user_id;
+            $notification->post_id = $post->id;
+            $notification->save();            
+        }
+
+
         return Redirect::back();
+    }
+    public function reply(Comment $comment)
+    {
+        return view('posts.reply', compact('comment'));
+    }
+    public function store_reply(Comment $comment, CommentRequest $request)
+    {
+        $comment->replies()->create([
+            "user_id" => Auth::id(),
+            "content" => $request->content,
+        ]);
+
+        return redirect()->back();
     }
 }

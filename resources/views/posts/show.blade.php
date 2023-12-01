@@ -1,6 +1,4 @@
 <x-app>
-
-
     <div class="card pt-2">
         <div class="card-body pb-0">
             <span class="d-flex align-items-center pt-1 pe-0">
@@ -16,24 +14,29 @@
             </p>
             
             <div class="text-primary text-muted d-flex align-items-center">
-            <img src="{{ asset('assets/img/likes.png') }}" class="img-fluid" alt="Like button">
-            <span class="mx-1">{{ $post->likes()->count() }} personnes aiment ce partage</span>
+                <img src="{{ asset('assets/img/likes.png') }}" class="img-fluid" alt="Like button">
+                <span class="mx-1">{{ $post->likes()->count() }} personnes aiment ce partage</span>
+                
+                @if (Auth::id() == $post->user_id * 0)
+                    <span class="mx-1">
+                        <a href="{{ route('posts.edit', $post->id) }}">Modifier</a>    
+                    </span>               
+                @endif
 
-            @if ($post->is_liked() == null)
-                <form action="{{ route('like.set', ['post_type' => 'post', 'post_id' => $post->id]) }}" method="get">
-                    @csrf
-                    <input type="submit" value="J'aime" class="btn btn-link text-decoration-none">
-                </form>                
-            @else
-                <form action="{{ route('like.unset', ['post_type' => 'post', 'post_id' => $post->id]) }}" method="get">
-                    @csrf
-                    <input type="submit" value="Je n'aime plus" class="btn btn-link text-decoration-none">
-                </form>    
-            @endif
-
-            </div>    
+                @if ($post->is_liked() == null)
+                    <form action="{{ route('like.set', ['post_type' => 'post', 'post_id' => $post->id]) }}" method="get">
+                        @csrf
+                        <input type="submit" value="J'aime" class="btn btn-link text-decoration-none">
+                    </form>                
+                @else
+                    <form action="{{ route('like.unset', ['post_type' => 'post', 'post_id' => $post->id]) }}" method="get">
+                        @csrf
+                        <input type="submit" value="Je n'aime plus" class="btn btn-link text-decoration-none">
+                    </form>    
+                @endif
+            </div>
+        </div>    
     </div>
-</div>
 
     <div class="mt-2">
         
@@ -60,14 +63,14 @@
                 @else
                     <a href="{{ route('like.unset', ['post_type' => 'comment', 'post_id' => $comment->id]) }}">Je n'aime plus</a>
                 @endif
-                   <a href="#" class="mx-2">Répondre</a>
+                   <a href="{{ route('posts.reply', $comment->id) }}" class="mx-2">Répondre</a>
               </p>
             </div>
         </div>
         @endforeach
         
     </div>
-      <form action="" method="post">
+      <form action="{{ route('posts.add_comment', $post->id) }}" method="post">
         @csrf
         <div class="form-group">
             <textarea class="form-control r" name="content" id="content" cols="10" rows="3" placeholder="Votre commentaire"></textarea>

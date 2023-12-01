@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -18,6 +19,9 @@ class LikeController extends Controller
                 break;
             case 'comment':
                 $post = Comment::findOrFail($post_id);
+                break;
+            case 'reply':
+                $post = Reply::findOrFail($post_id);
                 break;
             default:
                 return abort(404);
@@ -38,6 +42,9 @@ class LikeController extends Controller
                 break;
             case 'comment':
                 $post = Comment::findOrFail($post_id);
+                break;
+            case 'reply':
+                $post = Reply::findOrFail($post_id);
                 break;
             default:
                 return abort(404);

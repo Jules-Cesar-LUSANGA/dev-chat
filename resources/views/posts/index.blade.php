@@ -29,20 +29,38 @@
                     </p>
                     
                     <div class="text-primary text-muted d-flex align-items-center">
+                        
                     <img src="{{ asset('assets/img/likes.png') }}" class="img-fluid" alt="Like button">
                     <span class="mx-1">{{ $post->likes()->count() }} personnes aiment ceci</span>
                     </div>
-                    <div class=" d-flex border-top py-2 fw-bold">
-                    <div class="d-nline">
-                        <img src="{{ asset('assets/img/like.png') }}" class="img-fluid" alt="Like button"> Like
-                    </div>
-                    <div class="d-nline px-3">
-                        <a href="{{ route('posts.show',$post) }}">
-                            <img src="{{ asset('assets/img/chat.png') }}" class="img-fluid" alt="Comment button">
-                            Comment
-                        </a>
-                    </div>
-                </div>  
+                    <div class=" d-flex border-top py-0 fw-bold">
+                        <div class="d-nline">
+                            @if ($post->is_liked() == null)
+                                <form action="{{ route('like.set', ['post_type' => 'post', 'post_id' => $post->id]) }}" method="get">
+                                    @csrf
+                                    <button type="submit" class="btn">
+                                        <img src="{{ asset('assets/img/like.png') }}" class="img-fluid" alt="Like button"> J'aime
+                                    </button>
+                                </form>                
+                            @else
+                                <form action="{{ route('like.unset', ['post_type' => 'post', 'post_id' => $post->id]) }}" method="get">
+                                    @csrf
+                                    <button type="submit" class="btn">
+                                        <img src="{{ asset('assets/img/dislike.png') }}" class="img-fluid" alt="Like button"> Je n'aime plus
+                                    </button>
+                                </form>    
+                            @endif
+                        </div>
+                        <div class="d-nline px-3">
+                            <form action="{{ route('posts.show',$post->id) }}" method="post">
+                                @csrf
+                                <button type="submit" class="btn">
+                                    <img src="{{ asset('assets/img/chat.png') }}" class="img-fluid" alt="Comment button">
+                                    Comment
+                                </button>
+                            </form> 
+                        </div>
+                    </div>  
                             
                 </div>
     

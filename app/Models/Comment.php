@@ -27,4 +27,12 @@ class Comment extends Model
         $like = self::likes()->where('user_id', Auth::id())->first();
         return $like;
     }
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 }
